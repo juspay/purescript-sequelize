@@ -1,0 +1,31 @@
+{
+  "name": "purescript-sequelize",
+  "version": "0.1.0",
+  "description": "bindings for sequelize",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "sequelize": "^4.4.2",
+    "sequelize-cli": "^2.7.0"
+  },
+  "devDependencies": {
+    "pulp": "^11.0.0",
+    "purescript": "^0.11.5",
+    "sqlite3": "^3.1.8"
+  },
+  "scripts": {
+    "test": "pulp test",
+    "dev": "pulp --watch run",
+    "start": "node ./app.js",
+    "test-connection": "pulp test --main Test.Connection",
+    "test-insertion": "pulp test --main Test.Insertion",
+    "test-query": "pulp test --main Test.Query",
+    "test-associations": "pulp test --main Test.Association",
+    "test-where": "pulp test --main Test.Where",
+    "test-free": "pulp test --main Test.Free",
+    "test-failing": "pulp test --main Test.Failing"
+  },
+  "license": "ISC"
+}
