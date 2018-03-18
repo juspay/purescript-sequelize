@@ -1,7 +1,7 @@
 # purescript-sequelize
 Purescript wrapper for Sequelize - http://docs.sequelizejs.com/
 
-## LICENCE
+## LICENSE
 https://github.com/juspay/purescript-sequelize/blob/master/LICENSE
 
 ## Usage
