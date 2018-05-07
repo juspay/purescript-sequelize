@@ -38,6 +38,7 @@ module Sequelize.Connection
   , dialect
   , dialectOptions
   , dialectModulePath
+  , schema
   , storage
   , protocol
   , timezone
@@ -112,6 +113,9 @@ host = opt "host"
 
 port :: Option ConnOpts Int
 port = opt "port"
+
+schema :: Option ConnOpts String
+schema = opt "schema"
 
 data Dialect
   = MySQL
