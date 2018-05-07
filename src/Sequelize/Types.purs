@@ -72,6 +72,19 @@ defaultSyncOpts =
   , alter: false
   }
 
+type ReplicationOpts =
+  { read ::  Array DbConnOpts
+  , write :: DbConnOpts
+  }
+
+type DbConnOpts = 
+  { host :: String
+  , username :: String
+  , password :: String
+  , database :: String
+  , port :: Int
+  }
+
 -- for models
 
 -- | The type argument is a phantom type meant to track instances with their models

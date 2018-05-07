@@ -45,6 +45,7 @@ module Sequelize.Connection
   , omitNull
   , native
   , pool
+  , replication
   , quoteIdentifiers
   , transactionType
   , isolationLevel
@@ -64,7 +65,7 @@ import Data.Functor.Contravariant ((>$<))
 import Data.Maybe (Maybe, fromJust, isJust)
 import Data.Options (Option, Options, opt, options)
 import Data.StrMap (StrMap)
-import Sequelize.Types (Conn, ConnOpts, SEQUELIZE, SyncOpts)
+import Sequelize.Types (Conn, ConnOpts, SEQUELIZE, SyncOpts, ReplicationOpts)
 
 foreign import _newSequelize
   :: forall e. Foreign -> Eff ( sequelize :: SEQUELIZE | e ) Conn
@@ -169,3 +170,6 @@ retry = opt "retry"
 
 typeValidation :: Option ConnOpts Boolean
 typeValidation = opt "typeValidation"
+
+replication :: Option ConnOpts ReplicationOpts
+replication =  opt "replication"
