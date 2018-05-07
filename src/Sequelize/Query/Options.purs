@@ -29,6 +29,7 @@ module Sequelize.Query.Options
   , paranoid
   , limit
   , offset
+  , order
   , searchPath
   , returning
   , defaults
@@ -65,6 +66,9 @@ limit = opt "limit"
 
 offset :: forall a. Model a => Option a Int
 offset = opt "offset"
+
+order :: forall a. Model a => Option a (Array (Array String))
+order = opt "order"
 
 searchPath :: forall a. Model a => Option a String
 searchPath = opt "searchPath"
