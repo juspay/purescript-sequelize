@@ -35,6 +35,6 @@ exports._create = function (model, defs, opts) {
   return model.create(defs, opts);
 };
 
-exports._bulkCreate = function (model, arr) {
-  return model.bulkCreate(arr);
+exports._bulkCreate = function (model, arr, opts) {
+  return model.bulkCreate(arr, opts);
 };
