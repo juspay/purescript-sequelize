@@ -31,8 +31,8 @@ exports._save = function (model) {
   return model.save();
 };
 
-exports._create = function (model, defs) {
-  return model.create(defs);
+exports._create = function (model, defs, opts) {
+  return model.create(defs, opts);
 };
 
 exports._bulkCreate = function (model, arr) {
