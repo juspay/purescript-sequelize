@@ -39,6 +39,9 @@ foreign import null :: Foreign
 -- | the effect of using Sequelize
 foreign import data SEQUELIZE :: Effect
 
+-- | Transaction Instance Created by sequelize.transaction()
+foreign import data Transaction :: Type
+
 -- | The phantom type for the options object when making a SQZConn
 data ConnOpts
 
