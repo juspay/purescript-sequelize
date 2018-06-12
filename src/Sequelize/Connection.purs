@@ -177,3 +177,6 @@ typeValidation = opt "typeValidation"
 
 replication :: Option ConnOpts ReplicationOpts
 replication =  opt "replication"
+
+logging :: Option ConnOpts Foreign
+logging = opt "logging" 
