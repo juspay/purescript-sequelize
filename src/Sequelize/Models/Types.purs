@@ -72,7 +72,7 @@ module Sequelize.Models.Types
 import Prelude
 
 import Data.Enum (class Enum, enumFromTo)
-import Data.Foreign (Foreign)
+import Foreign (Foreign)
 import Data.Function.Uncurried (Fn1, Fn2, runFn2)
 import Data.Maybe (Maybe(..), maybe)
 import Data.Newtype (class Newtype, unwrap)

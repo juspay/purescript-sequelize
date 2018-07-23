@@ -27,21 +27,21 @@ module Sequelize.Transaction where
 
 import Prelude
 
-import Control.Monad.Aff (Aff)
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Class (liftEff)
+import Effect.Aff (Aff)
+import Effect (Effect)
+import Effect.Class (liftEffect)
 import Control.Promise (Promise, toAff)
-import Sequelize.Types (Conn, SEQUELIZE, Transaction)
+import Sequelize.Types (Conn, Transaction)
 
 foreign import _transaction :: Conn -> Promise Transaction
-foreign import _commitTransaction :: forall e. Transaction -> Eff ( sequelize :: SEQUELIZE | e ) Unit
-foreign import _rollbackTransaction :: forall e. Transaction -> Eff ( sequelize :: SEQUELIZE | e ) Unit
+foreign import _commitTransaction :: Transaction -> Effect Unit
+foreign import _rollbackTransaction :: Transaction -> Effect Unit
 
-startTransaction :: forall eff. Conn -> Aff ( sequelize :: SEQUELIZE | eff ) Transaction
+startTransaction :: Conn -> Aff Transaction
 startTransaction conn = toAff <<< _transaction $ conn
 
-commitTransaction :: forall eff. Transaction -> Aff ( sequelize :: SEQUELIZE | eff ) Unit
-commitTransaction = liftEff <<< _commitTransaction
+commitTransaction :: Transaction -> Aff Unit
+commitTransaction = liftEffect <<< _commitTransaction
 
-rollbackTransaction :: forall eff. Transaction -> Aff ( sequelize :: SEQUELIZE | eff ) Unit
-rollbackTransaction = liftEff <<< _rollbackTransaction
+rollbackTransaction :: Transaction -> Aff Unit
+rollbackTransaction = liftEffect <<< _rollbackTransaction

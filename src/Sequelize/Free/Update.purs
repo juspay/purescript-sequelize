@@ -27,18 +27,18 @@ module Sequelize.Free.Update where
 
 import Prelude
 
-import Control.Monad.Aff (Aff)
+import Effect.Aff (Aff)
 import Data.Maybe (Maybe)
 import Data.Options (Options)
-import Data.StrMap (StrMap)
+import Foreign.Object (Object)
 import Sequelize.CRUD.Update as Update
 import Sequelize.Class (class Model)
-import Sequelize.Types (Instance, ModelOf, SEQUELIZE)
+import Sequelize.Types (Instance, ModelOf)
 
 data UpdateF a next
   = Update (Instance a) a next
-  | Increment (Instance a) (StrMap Int) next
-  | Decrement (Instance a) (StrMap Int) next
+  | Increment (Instance a) (Object Int) next
+  | Decrement (Instance a) (Object Int) next
   | UpdateModel
     (Options a)
     (Options a)
@@ -47,10 +47,10 @@ data UpdateF a next
 updateF :: forall a. Instance a -> a -> UpdateF a Unit
 updateF i a = Update i a unit
 
-incrementF :: forall a. Instance a -> StrMap Int -> UpdateF a Unit
+incrementF :: forall a. Instance a -> Object Int -> UpdateF a Unit
 incrementF i strmap = Increment i strmap unit
 
-decrementF :: forall a. Instance a -> StrMap Int -> UpdateF a Unit
+decrementF :: forall a. Instance a -> Object Int -> UpdateF a Unit
 decrementF i strmap = Decrement i strmap unit
 
 updateModelF
@@ -58,14 +58,14 @@ updateModelF
    . Options a
   -> Options a
   -> UpdateF a {affectedCount :: Int, affectedRows :: Maybe (Array (Instance a))}
-updateModelF a o = UpdateModel a o id
+updateModelF a o = UpdateModel a o identity
 
 interpretUpdate
-  :: forall a e
+  :: forall a
    . Model a
   => ModelOf a
   -> UpdateF a
-  ~> Aff (sequelize :: SEQUELIZE | e)
+  ~> Aff
 interpretUpdate moa = case _ of
   Update inst a next -> next <$ Update.update inst a
   Increment inst strmap next -> next <$ Update.increment inst strmap

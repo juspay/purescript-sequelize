@@ -62,9 +62,9 @@ module Sequelize.Where
   ) where
 
 import Data.Bifunctor (rmap)
-import Data.Foreign (Foreign, toForeign)
+import Foreign (Foreign, unsafeToForeign)
 import Data.Monoid (class Monoid)
-import Data.StrMap as Map
+import Foreign.Object as Object
 import Data.Tuple (Tuple)
 import Prelude hiding (($>))
 import Sequelize.Types (WhereClause(..), null)
@@ -91,7 +91,7 @@ instance wHEREIsWhere :: IsWhere WHERE where -- this looks even worse
 
 foldWHERE :: forall a. WHERE a -> WhereClause
 foldWHERE (WHERE xs) =
-  let clause = Map.fromFoldable $ rmap literalToForeign <$> xs
+  let clause = Object.fromFoldable $ rmap literalToForeign <$> xs
    in WhereClause clause
 
 data Term
@@ -182,22 +182,22 @@ infixr 4 inS as <-?
 foldWhere :: forall a. Where a -> WhereClause
 foldWhere w = WhereClause $ foldWhere' w
 
-foldWhere' :: forall a. Where a -> Map.StrMap Foreign
+foldWhere' :: forall a. Where a -> Object.Object Foreign
 foldWhere' w = case w of
   And cs -> foldAnd cs
   Or cs -> foldOr cs
   Is key val -> foldIs key val
 
-foldAnd :: forall a. Array (Where a) -> Map.StrMap Foreign
-foldAnd [] = Map.empty
-foldAnd xs = Map.singleton "$and" (toForeign $ map foldWhere' xs)
+foldAnd :: forall a. Array (Where a) -> Object.Object Foreign
+foldAnd [] = Object.empty
+foldAnd xs = Object.singleton "$and" (unsafeToForeign $ map foldWhere' xs)
 
-foldOr :: forall a. Array (Where a) -> Map.StrMap Foreign
-foldOr [] = Map.empty
-foldOr xs = Map.singleton "$or" (toForeign $ map foldWhere' xs)
+foldOr :: forall a. Array (Where a) -> Object.Object Foreign
+foldOr [] = Object.empty
+foldOr xs = Object.singleton "$or" (unsafeToForeign $ map foldWhere' xs)
 
-foldIs :: String -> Term -> Map.StrMap Foreign
-foldIs key val = Map.singleton key $ termToClause val
+foldIs :: String -> Term -> Object.Object Foreign
+foldIs key val = Object.singleton key $ termToClause val
 
 termToClause :: Term -> Foreign
 termToClause = case _ of
@@ -214,32 +214,32 @@ termToClause = case _ of
   LessThan val -> singleToForeign literalToForeign "$lt" val
   LessThanOrEq val -> singleToForeign literalToForeign "$lte" val
   -- Ints only
-  Between vals -> arrayToForeign toForeign "$between" vals
-  NotBetween vals -> arrayToForeign toForeign "$notBetween" vals
-  Overlap vals -> arrayToForeign toForeign "$overlap" vals
+  Between vals -> arrayToForeign unsafeToForeign "$between" vals
+  NotBetween vals -> arrayToForeign unsafeToForeign "$notBetween" vals
+  Overlap vals -> arrayToForeign unsafeToForeign "$overlap" vals
   -- Strings only
-  Like val -> singleToForeign toForeign "$like" val
-  NotLike val -> singleToForeign toForeign "$notLike" val
-  ILike val -> singleToForeign toForeign "$iLike" val
-  NotILike val -> singleToForeign toForeign "$notILike" val
-  RegExp val -> singleToForeign toForeign "$regexp" val
-  NotRegExp val -> singleToForeign toForeign "$notRegexp" val
-  IRegExp val -> singleToForeign toForeign "$iRegexp" val
-  NotIRegExp val -> singleToForeign toForeign "$notIRegexp" val
-  Col val -> singleToForeign toForeign "$col" val
+  Like val -> singleToForeign unsafeToForeign "$like" val
+  NotLike val -> singleToForeign unsafeToForeign "$notLike" val
+  ILike val -> singleToForeign unsafeToForeign "$iLike" val
+  NotILike val -> singleToForeign unsafeToForeign "$notILike" val
+  RegExp val -> singleToForeign unsafeToForeign "$regexp" val
+  NotRegExp val -> singleToForeign unsafeToForeign "$notRegexp" val
+  IRegExp val -> singleToForeign unsafeToForeign "$iRegexp" val
+  NotIRegExp val -> singleToForeign unsafeToForeign "$notIRegexp" val
+  Col val -> singleToForeign unsafeToForeign "$col" val
   -- Booleans
-  Not val -> singleToForeign toForeign "$not" val
+  Not val -> singleToForeign unsafeToForeign "$not" val
 
 arrayToForeign :: forall a. (a -> Foreign) -> String -> Array a -> Foreign
-arrayToForeign f k vs = toForeign $ Map.singleton k $ map f vs
+arrayToForeign f k vs = unsafeToForeign $ Object.singleton k $ map f vs
 
 singleToForeign :: forall a. (a -> Foreign) -> String -> a -> Foreign
-singleToForeign f k v = toForeign $ Map.singleton k $ f v
+singleToForeign f k v = unsafeToForeign $ Object.singleton k $ f v
 
 literalToForeign :: Literal -> Foreign
 literalToForeign = case _ of
-  String s -> toForeign s
-  Int n -> toForeign n
-  Number n -> toForeign n
-  Boolean b -> toForeign b
+  String s -> unsafeToForeign s
+  Int n -> unsafeToForeign n
+  Number n -> unsafeToForeign n
+  Boolean b -> unsafeToForeign b
   Null -> null

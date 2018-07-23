@@ -47,20 +47,20 @@ module Sequelize.CRUD.Read
 
 import Prelude
 
-import Control.Monad.Aff (Aff)
-import Control.Monad.Eff.Exception (error)
+import Effect.Aff (Aff)
+import Effect.Exception (error)
 import Control.Monad.Error.Class (throwError)
 import Control.Promise (Promise, toAff)
 import Data.Array as Array
 import Data.Either (Either(..), either, hush)
-import Data.Foreign (Foreign, toForeign, isNull)
+import Foreign (Foreign, unsafeToForeign, isNull)
 import Data.Function.Uncurried (Fn2, Fn3, runFn2)
 import Data.Maybe (Maybe(..))
 import Data.Options (Options)
 import Sequelize.Class (class Model, class Submodel)
 import Sequelize.Instance (instanceToModelE)
 import Sequelize.Query.Util (coerceArrayTuple, promiseToAff2, promiseToAff3)
-import Sequelize.Types (Instance, ModelOf, SEQUELIZE)
+import Sequelize.Types (Instance, ModelOf)
 
 foreign import _findById
   :: forall a b c.
@@ -70,56 +70,56 @@ foreign import _findById
      (Promise (Instance b))
 
 findById
-  :: forall a b e. Submodel a b
+  :: forall a b. Submodel a b
   => ModelOf a
   -> Either String Int
-  -> Aff ( sequelize :: SEQUELIZE | e ) (Maybe (Instance b))
+  -> Aff (Maybe (Instance b))
 findById model ident = do
   maybeInst <-
-    toAff $ runFn2 _findById model (either toForeign toForeign ident)
-  pure if isNull (toForeign maybeInst)
+    toAff $ runFn2 _findById model (either unsafeToForeign unsafeToForeign ident)
+  pure if isNull (unsafeToForeign maybeInst)
     then Nothing
     else Just maybeInst
 
 findByIdWithError
-  :: forall a b e
+  :: forall a b
    . Submodel a b
   => ModelOf a
   -> Either String Int
   -> String
-  -> Aff ( sequelize :: SEQUELIZE | e ) b
+  -> Aff b
 findByIdWithError m i msg = collapseErrors findById m i msg
 
 findByStringId
-  :: forall a b e. Submodel a b
+  :: forall a b. Submodel a b
   => ModelOf a
   -> String
-  -> Aff ( sequelize :: SEQUELIZE | e ) (Maybe (Instance b))
+  -> Aff (Maybe (Instance b))
 findByStringId model = findById model <<< Left
 
 findByStringIdWithError
-  :: forall a b e
+  :: forall a b
    . Submodel a b
   => ModelOf a
   -> String
   -> String
-  -> Aff ( sequelize :: SEQUELIZE | e ) b
+  -> Aff b
 findByStringIdWithError m i msg = findByIdWithError m (Left i) msg
 
 findByIntId
-  :: forall a b e. Submodel a b
+  :: forall a b. Submodel a b
   => ModelOf a
   -> Int
-  -> Aff ( sequelize :: SEQUELIZE | e ) (Maybe (Instance b))
+  -> Aff (Maybe (Instance b))
 findByIntId model = findById model <<< Right
 
 findByIntIdWithError
-  :: forall a b e
+  :: forall a b
    . Submodel a b
   => ModelOf a
   -> Int
   -> String
-  -> Aff ( sequelize :: SEQUELIZE | e ) b
+  -> Aff b
 findByIntIdWithError m i msg = findByIdWithError m (Right i) msg
 
 foreign import _findOne
@@ -130,35 +130,35 @@ foreign import _findOne
      (Promise (Instance b))
 
 findOne
-  :: forall a b e. Submodel a b
+  :: forall a b. Submodel a b
   => ModelOf a
   -> Options b
-  -> Aff ( sequelize :: SEQUELIZE | e ) (Maybe (Instance b))
+  -> Aff (Maybe (Instance b))
 findOne m o = do
   maybeInst <- promiseToAff2 _findOne m o
-  pure if isNull (toForeign maybeInst)
+  pure if isNull (unsafeToForeign maybeInst)
     then Nothing
     else Just maybeInst
 
 findOne'
-  :: forall a b e.
+  :: forall a b.
   ModelOf a
   -> Options b
-  -> Aff ( sequelize :: SEQUELIZE | e ) (Maybe (Instance b))
+  -> Aff (Maybe (Instance b))
 findOne' m o = do
   maybeInst <- promiseToAff2 _findOne m o
-  pure if isNull (toForeign maybeInst)
+  pure if isNull (unsafeToForeign maybeInst)
     then Nothing
     else Just maybeInst
 
 
 findOneWithError
-  :: forall a b e
+  :: forall a b
    . Submodel a b
   => ModelOf a
   -> Options b
   -> String
-  -> Aff ( sequelize :: SEQUELIZE | e ) b
+  -> Aff b
 findOneWithError m o msg = collapseErrors findOne m o msg
 
 foreign import _findOrBuild
@@ -172,10 +172,10 @@ foreign import _findOrBuild
 -- | refers to whether the row was built (true) or not (false -- therefore the
 -- | query succeeded).
 findOrBuild
-  :: forall a b e. Submodel a b
+  :: forall a b. Submodel a b
   => ModelOf a
   -> Options b
-  -> Aff (sequelize :: SEQUELIZE | e)
+  -> Aff
     { inst :: Instance b
     , created :: Boolean
     }
@@ -190,22 +190,22 @@ foreign import _findOrCreate
 
 -- | Same as findOrBuild, but saves in case of row creation.
 findOrCreate
-  :: forall a b e. Submodel a b
+  :: forall a b. Submodel a b
   => ModelOf a
   -> Options b
-  -> Aff (sequelize :: SEQUELIZE | e)
+  -> Aff
     { inst :: Instance b
     , created :: Boolean
     }
 findOrCreate m o = promiseToAff2 _findOrCreate m o >>= coerceArrayTuple
 
 findOrCreateWithError
-  :: forall a b e
+  :: forall a b
    . Submodel a b
   => ModelOf a
   -> Options b
   -> String
-  -> Aff (sequelize :: SEQUELIZE | e)
+  -> Aff
     { model :: b
     , created :: Boolean
     }
@@ -223,18 +223,18 @@ foreign import _findAndCountAll
      (Promise {count :: Int, rows :: Array (Instance b)})
 
 findAndCountAll
-  :: forall a b e. Submodel a b
+  :: forall a b. Submodel a b
   => ModelOf a
   -> Options b
-  -> Aff ( sequelize :: SEQUELIZE | e ) {count :: Int, rows :: Array (Instance b)}
+  -> Aff {count :: Int, rows :: Array (Instance b)}
 findAndCountAll = promiseToAff2 _findAndCountAll
 
 findAndCountAll'
-  :: forall a b e
+  :: forall a b
    . Submodel a b
   => ModelOf a
   -> Options b
-  -> Aff ( sequelize :: SEQUELIZE | e ) {count :: Int, rows :: Array b}
+  -> Aff {count :: Int, rows :: Array b}
 findAndCountAll' m o = do
   all <- findAndCountAll m o
   pure {count: all.count, rows: catMaybes all.rows}
@@ -247,18 +247,18 @@ foreign import _findAll
      (Promise (Array (Instance b)))
 
 findAll
-  :: forall a b e. Submodel a b
+  :: forall a b. Submodel a b
   => ModelOf a
   -> Options b
-  -> Aff ( sequelize :: SEQUELIZE | e ) (Array (Instance b))
+  -> Aff (Array (Instance b))
 findAll = promiseToAff2 _findAll
 
 findAll'
-  :: forall a b e
+  :: forall a b
    . Submodel a b
   => ModelOf a
   -> Options b
-  -> Aff ( sequelize :: SEQUELIZE | e ) (Array b)
+  -> Aff (Array b)
 findAll' m o = catMaybes <$> findAll m o
 
 foreign import _count
@@ -269,10 +269,10 @@ foreign import _count
      (Promise Int)
 
 count
-  :: forall a e. Model a
+  :: forall a. Model a
   => ModelOf a
   -> Options a
-  -> Aff ( sequelize :: SEQUELIZE | e ) Int
+  -> Aff Int
 count = promiseToAff2 _count
 
 foreign import _max
@@ -284,11 +284,11 @@ foreign import _max
      (Promise Int)
 
 max
-  :: forall a e. Model a
+  :: forall a. Model a
   => ModelOf a
   -> Options a
   -> String
-  -> Aff ( sequelize :: SEQUELIZE | e ) Int
+  -> Aff Int
 max m o f = promiseToAff3 _max m o f
 
 foreign import _min
@@ -300,21 +300,21 @@ foreign import _min
      (Promise Int)
 
 min
-  :: forall a e. Model a
+  :: forall a. Model a
   => ModelOf a
   -> Options a
   -> String
-  -> Aff ( sequelize :: SEQUELIZE | e ) Int
+  -> Aff Int
 min m o f = promiseToAff3 _min m o f
 
 collapseErrors
-  :: forall a b m eff
+  :: forall a b m
    . Model m
-  => (a -> b -> Aff eff (Maybe (Instance m)))
+  => (a -> b -> Aff (Maybe (Instance m)))
   -> a
   -> b
   -> String
-  -> Aff eff m
+  -> Aff m
 collapseErrors find a b msg = do
   maybei <- map instanceToModelE <$> find a b
   case maybei of

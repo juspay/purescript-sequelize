@@ -39,7 +39,7 @@ module Sequelize.Models.Columns
   ) where
 
 import Data.Either (Either, either)
-import Data.Foreign (Foreign, toForeign)
+import Foreign (Foreign, unsafeToForeign)
 import Data.Functor.Contravariant ((>$<))
 import Data.Options (Option, opt)
 import Sequelize.Models.Types (DataType, sqzDataTypetoForeign)
@@ -55,7 +55,7 @@ defaultValue :: forall a. Option (ColumnOpts a) Foreign
 defaultValue = opt "defaultValue"
 
 unique :: forall a. Option (ColumnOpts a) (Either String Boolean)
-unique = either toForeign toForeign >$< opt "unique"
+unique = either unsafeToForeign unsafeToForeign >$< opt "unique"
 
 primaryKey :: forall a. Option (ColumnOpts a) Boolean
 primaryKey = opt "primaryKey"

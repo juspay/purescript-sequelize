@@ -36,12 +36,12 @@ module Sequelize.CRUD.Create
 
 import Prelude
 
-import Control.Monad.Aff (Aff)
+import Effect.Aff (Aff)
 import Control.Promise (Promise, toAff)
 import Data.Function.Uncurried (Fn2, Fn3, runFn2, runFn3)
 import Data.Options (Options, options)
 import Sequelize.Class (class Model, class Submodel, encodeModel, class EncodeModel)
-import Sequelize.Types (Instance, ModelOf, SEQUELIZE)
+import Sequelize.Types (Instance, ModelOf)
 
 foreign import _build
   :: forall a b c.
@@ -62,10 +62,10 @@ foreign import _save
   :: forall a. Instance a -> Promise (Instance a)
 
 save
-  :: forall a e
+  :: forall a
    . Model a
   => Instance a
-  -> Aff ( sequelize :: SEQUELIZE | e ) (Instance a)
+  -> Aff (Instance a)
 save m = toAff $ _save m
 
 foreign import _create
@@ -77,19 +77,19 @@ foreign import _create
      (Promise (Instance d))
 
 create
-  :: forall a b e
+  :: forall a b
    . Submodel a b
   => ModelOf a
   -> b
-  -> Aff ( sequelize :: SEQUELIZE | e ) (Instance b)
+  -> Aff (Instance b)
 create m t = toAff $ runFn3 _create m (encodeModel t) {}
 
 create'
-  :: forall a e.
+  :: forall a.
   EncodeModel a
   => ModelOf a
   -> a
-  -> Aff ( sequelize :: SEQUELIZE | e ) (Instance a)
+  -> Aff (Instance a)
 create' m t = toAff $ runFn3 _create m (encodeModel t) {}
 
 foreign import _bulkCreate
@@ -101,34 +101,34 @@ foreign import _bulkCreate
      (Promise Unit)
 
 bulkCreate
-  :: forall a b e. Submodel a b
+  :: forall a b. Submodel a b
   => ModelOf a
   -> Array b
-  -> Aff ( sequelize :: SEQUELIZE | e ) Unit
+  -> Aff Unit
 bulkCreate m arr = toAff $ runFn3 _bulkCreate m (map encodeModel arr) {}
 
 createWithOpts
-  :: forall a b c e
+  :: forall a b c
    . Submodel a b
   => ModelOf a
   -> b
   -> Options c
-  -> Aff ( sequelize :: SEQUELIZE | e ) (Instance b)
+  -> Aff (Instance b)
 createWithOpts m t opts = toAff $ runFn3 _create m (encodeModel t) (options opts)
 
 createWithOpts'
-  :: forall a c e.
+  :: forall a c.
   EncodeModel a
   => ModelOf a
   -> a
   -> Options c
-  -> Aff ( sequelize :: SEQUELIZE | e ) (Instance a)
+  -> Aff (Instance a)
 createWithOpts' m t opts = toAff $ runFn3 _create m (encodeModel t) (options opts)
 
 bulkCreateWithOpts
-  :: forall a b c e. Submodel a b
+  :: forall a b c. Submodel a b
   => ModelOf a
   -> Array b
   -> Options c
-  -> Aff ( sequelize :: SEQUELIZE | e ) Unit
+  -> Aff Unit
 bulkCreateWithOpts m arr opts = toAff $ runFn3 _bulkCreate m (map encodeModel arr) (options opts)

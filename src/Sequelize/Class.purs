@@ -27,12 +27,12 @@ module Sequelize.Class where
 
 import Prelude
 
-import Data.Foreign (Foreign)
-import Data.Foreign as F
-import Data.Foreign.Class (class Decode, class Encode)
-import Data.Foreign.Generic (defaultOptions, genericDecode, genericEncode)
-import Data.Foreign.Generic.Class (class GenericDecode, class GenericEncode)
-import Data.Foreign.JSON (decodeJSONWith)
+import Foreign (Foreign)
+import Foreign as F
+import Foreign.Class (class Decode, class Encode)
+import Foreign.Generic (defaultOptions, genericDecode, genericEncode)
+import Foreign.Generic.Class (class GenericDecode, class GenericEncode)
+import Foreign.JSON (decodeJSONWith)
 import Data.Generic.Rep (class Generic)
 import Global.Unsafe (unsafeStringify)
 import Sequelize.Types (WhereClause, ModelCols)
@@ -57,13 +57,13 @@ class (EncodeModel m, DecodeModel m) <= Model m where
 
 -- | This relation represents two models, one of which is a submodel of the other.
 -- | This is useful for when you want Sequelize to take care of, for example,
--- | the "id", "createdAt" and "updatedAt" columns for insertion, but you want
+-- | the "identity", "createdAt" and "updatedAt" columns for insertion, but you want
 -- | access to them in your supermodel (hehe, supermodel).
 class (Model m, Model n) <= Submodel m n where
   project :: n -> m
 
 instance idSubmodel :: Model m => Submodel m m where
-  project = id
+  project = identity
 
 -- | Not provided as an instance because it's too easy for the compiler to
 -- | complain about infinite loops

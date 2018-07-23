@@ -27,9 +27,9 @@ module Sequelize.Free.Create where
 
 import Prelude
 
-import Control.Monad.Aff (Aff)
+import Effect.Aff (Aff)
 import Sequelize.Class (class Submodel)
-import Sequelize.Types (Instance, ModelOf, SEQUELIZE)
+import Sequelize.Types (Instance, ModelOf)
 import Sequelize.CRUD.Create as Create
 
 data CreateF b next
@@ -39,23 +39,23 @@ data CreateF b next
   | BulkCreate (Array b) next
 
 buildF :: forall b. b -> CreateF b (Instance b)
-buildF b = Build b id
+buildF b = Build b identity
 
 saveF :: forall b. Instance b -> CreateF b (Instance b)
-saveF b = Save b id
+saveF b = Save b identity
 
 createOneF :: forall b. b -> CreateF b (Instance b)
-createOneF b = CreateOne b id
+createOneF b = CreateOne b identity
 
 bulkCreateF :: forall b. Array b -> CreateF b Unit
 bulkCreateF bs = BulkCreate bs unit
 
 interpretCreate
-  :: forall a b e
+  :: forall a b
    . Submodel a b
   => ModelOf a
   -> CreateF b
-  ~> Aff (sequelize :: SEQUELIZE | e)
+  ~> Aff
 interpretCreate model = case _ of
   Build b k -> pure $ k $ Create.build model b
   Save b k -> k <$> Create.save b

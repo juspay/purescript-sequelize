@@ -56,24 +56,24 @@ module Sequelize.Connection
 
 import Prelude
 
-import Control.Monad.Aff (Aff)
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Class (liftEff)
+import Effect.Aff (Aff)
+import Effect (Effect)
+import Effect.Class (liftEffect)
 import Control.Promise (Promise, toAff)
-import Data.Foreign (Foreign)
+import Foreign (Foreign)
 import Data.Function.Uncurried (Fn4, runFn4)
 import Data.Functor.Contravariant ((>$<))
 import Data.Maybe (Maybe, fromJust, isJust)
 import Data.Options (Option, Options, opt, options)
-import Data.StrMap (StrMap)
-import Sequelize.Types (Conn, ConnOpts, SEQUELIZE, SyncOpts, ReplicationOpts)
+import Foreign.Object (Object)
+import Sequelize.Types (Conn, ConnOpts, SyncOpts, ReplicationOpts)
 
 foreign import _newSequelize
-  :: forall e. Foreign -> Eff ( sequelize :: SEQUELIZE | e ) Conn
+  :: Foreign -> Effect Conn
 
 getConn
-  :: forall e. Options ConnOpts -> Aff ( sequelize :: SEQUELIZE | e ) Conn
-getConn = liftEff <<< _newSequelize <<< options
+  :: Options ConnOpts -> Aff Conn
+getConn = liftEffect <<< _newSequelize <<< options
 
 foreign import _syncSequelize
   :: forall a.
@@ -88,13 +88,13 @@ syncConn
   :: forall e
    . Conn
   -> SyncOpts
-  -> Aff ( sequelize :: SEQUELIZE | e ) Unit
+  -> Aff Unit
 syncConn conn opts = toAff $ runFn4 _syncSequelize isJust fromJust conn opts
 
 foreign import _authenticate
   :: Conn -> Promise Unit
 
-authenticate :: forall e. Conn -> Aff ( sequelize :: SEQUELIZE | e ) Unit
+authenticate :: Conn -> Aff Unit
 authenticate = toAff <<< _authenticate
 
 foreign import literal :: String -> Foreign
@@ -136,7 +136,7 @@ dialectModulePath :: Option ConnOpts String
 dialectModulePath = opt "dialectModulePath"
 
 -- | It's up to you to make sure the Foreign keys will make sense!
-dialectOptions :: Option ConnOpts (StrMap Foreign)
+dialectOptions :: Option ConnOpts (Object Foreign)
 dialectOptions = opt "dialectOptions"
 
 storage :: Option ConnOpts String
@@ -179,4 +179,4 @@ replication :: Option ConnOpts ReplicationOpts
 replication =  opt "replication"
 
 logging :: Option ConnOpts Foreign
-logging = opt "logging" 
+logging = opt "logging"

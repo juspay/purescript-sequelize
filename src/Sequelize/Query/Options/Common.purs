@@ -26,13 +26,13 @@
 module Sequelize.Query.Options.Common where
 
 import Prelude
-import Data.Foreign (Foreign, toForeign)
+import Foreign (Foreign, unsafeToForeign)
 
 trueF :: Foreign
-trueF = toForeign true
+trueF = unsafeToForeign true
 
 falseF :: Foreign
-falseF = toForeign false
+falseF = unsafeToForeign false
 
 showF :: forall a. Show a => a -> Foreign
-showF a = toForeign (show a)
+showF a = unsafeToForeign (show a)

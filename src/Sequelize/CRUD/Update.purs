@@ -32,16 +32,16 @@ module Sequelize.CRUD.Update
 
 import Prelude
 
-import Control.Monad.Aff (Aff)
+import Effect.Aff (Aff)
 import Control.Promise (Promise, toAff)
 import Data.Array ((!!))
-import Data.Foreign (Foreign, isUndefined)
+import Foreign (Foreign, isUndefined)
 import Data.Function.Uncurried (Fn2, Fn3, runFn2, runFn3)
 import Data.Maybe (Maybe(Nothing, Just), maybe)
 import Data.Options (Options, options)
-import Data.StrMap (StrMap)
+import Foreign.Object (Object)
 import Sequelize.Class (class Model, encodeModel)
-import Sequelize.Types (Instance, ModelOf, SEQUELIZE)
+import Sequelize.Types (Instance, ModelOf)
 import Unsafe.Coerce (unsafeCoerce)
 
 foreign import _update
@@ -52,10 +52,10 @@ foreign import _update
      (Promise Unit)
 
 update
-  :: forall a e. Model a
+  :: forall a. Model a
   => Instance a
   -> a
-  -> Aff ( sequelize :: SEQUELIZE | e ) Unit
+  -> Aff Unit
 update inst t = toAff $ runFn2 _update inst $ encodeModel t
 
 foreign import _updateModel
@@ -68,13 +68,11 @@ foreign import _updateModel
 
 -- | NOTE: The options require a "where", or else an error will be thrown.
 updateModel
-  :: forall a e. Model a
+  :: forall a. Model a
   => ModelOf a
   -> Options a
   -> Options a
-  -> Aff
-    ( sequelize :: SEQUELIZE | e )
-    { affectedCount :: Int, affectedRows :: Maybe (Array (Instance a)) }
+  -> Aff { affectedCount :: Int, affectedRows :: Maybe (Array (Instance a)) }
 updateModel m a o = do
   arrForeign <- toAff $ updateM m (options a) (options o)
   let affectedCount = maybe 0 unsafeCoerce $ arrForeign !! 0
@@ -89,26 +87,26 @@ foreign import _increment
   :: forall a.
      Fn2
      (Instance a)
-     (StrMap Int)
+     (Object Int)
      (Promise Unit)
 
 increment
-  :: forall a e. Model a
+  :: forall a. Model a
   => Instance a
-  -> StrMap Int
-  -> Aff ( sequelize :: SEQUELIZE | e ) Unit
+  -> Object Int
+  -> Aff Unit
 increment i m = toAff $ runFn2 _increment i m
 
 foreign import _decrement
   :: forall a.
      Fn2
      (Instance a)
-     (StrMap Int)
+     (Object Int)
      (Promise Unit)
 
 decrement
-  :: forall a e. Model a
+  :: forall a. Model a
   => Instance a
-  -> StrMap Int
-  -> Aff ( sequelize :: SEQUELIZE | e ) Unit
+  -> Object Int
+  -> Aff Unit
 decrement i m = toAff $ runFn2 _decrement i m

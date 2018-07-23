@@ -23,8 +23,8 @@
 * along with this program. If not, see <https://www.gnu.org/licenses/agpl.html>.
 */
 
-exports._findById = function (model, id) {
-  return model.findById(id);
+exports._findById = function (model, identity) {
+  return model.findById(identity);
 };
 
 exports._findOne = function (model, opts) {

@@ -27,40 +27,38 @@ module Sequelize.CRUD.Destroy (destroy, delete) where
 
 import Prelude
 
-import Control.Monad.Aff (Aff)
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Class (liftEff)
+import Effect.Aff (Aff)
+import Effect (Effect)
+import Effect.Class (liftEffect)
 import Control.Promise (Promise, toAff)
 import Data.Array ((!!))
-import Data.Foreign (Foreign, isUndefined)
+import Foreign (Foreign, isUndefined)
 import Data.Function.Uncurried (Fn2, Fn3, runFn2)
 import Data.Maybe (Maybe(..), maybe)
 import Data.Options (Options(..), options)
 import Sequelize.Class (class Model)
-import Sequelize.Types (Instance, ModelOf, SEQUELIZE)
+import Sequelize.Types (Instance, ModelOf)
 import Unsafe.Coerce (unsafeCoerce)
 
 foreign import _destroy
-  :: forall a e. Instance a -> Eff ( sequelize :: SEQUELIZE | e ) Unit
+  :: forall a. Instance a -> Effect Unit
 
 foreign import _delete
   :: forall a b . Fn2 (ModelOf a) b (Promise Foreign)
 
 
 destroy
-  :: forall a e. Model a
+  :: forall a. Model a
   => Instance a
-  -> Aff ( sequelize :: SEQUELIZE | e ) Unit
-destroy = liftEff <<< _destroy
+  -> Aff Unit
+destroy = liftEffect <<< _destroy
 
 
 delete
-  :: forall a e. Model a
+  :: forall a. Model a
   => ModelOf a
   -> Options a
-  -> Aff
-    ( sequelize :: SEQUELIZE | e )
-    { affectedCount :: Int }
+  -> Aff { affectedCount :: Int }
 delete m o = do
   arrForeign <- toAff $ runFn2 _delete m (options o)
   let affectedCount = (unsafeCoerce arrForeign)

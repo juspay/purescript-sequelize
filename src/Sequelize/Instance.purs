@@ -36,9 +36,9 @@ import Prelude
 
 import Control.Monad.Except (runExcept)
 import Data.Either (Either)
-import Data.Foreign (MultipleErrors)
-import Data.Foreign as F
-import Data.Foreign.Index (readProp)
+import Foreign (MultipleErrors)
+import Foreign as F
+import Foreign.Index (readProp)
 import Data.Function.Uncurried (Fn2, runFn2)
 import Sequelize.Class (class Model, decodeModel)
 import Sequelize.Types (Instance)
@@ -59,7 +59,7 @@ instanceToModelE
 instanceToModelE = runExcept <<< instanceToModel
 
 -- | See if the instance has a value. Useful for when your database has columns
--- | which do not correspond to any part of your Model, for example a unique "id"
+-- | which do not correspond to any part of your Model, for example a unique "identity"
 -- | column.
 peek
   :: forall a

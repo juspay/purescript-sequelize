@@ -25,19 +25,16 @@
 
 module Sequelize.Types where
 
-import Control.Monad.Eff (kind Effect)
-import Data.Foreign (Foreign)
+import Foreign (Foreign)
 import Data.Maybe (Maybe(..))
 import Data.Newtype (class Newtype)
 import Data.Options (Options)
-import Data.StrMap (StrMap)
+import Foreign.Object (Object)
 import Data.String.Regex (Regex)
 import Data.Tuple (Tuple)
 
 foreign import null :: Foreign
 
--- | the effect of using Sequelize
-foreign import data SEQUELIZE :: Effect
 
 -- | Transaction Instance Created by sequelize.transaction()
 foreign import data Transaction :: Type
@@ -77,7 +74,7 @@ type ReplicationOpts =
   , write :: DbConnOpts
   }
 
-type DbConnOpts = 
+type DbConnOpts =
   { host :: String
   , username :: String
   , password :: String
@@ -100,7 +97,7 @@ type ModelCols a = Array (Tuple String (Options (ColumnOpts a)))
 
 -- queries
 
-newtype WhereClause = WhereClause (StrMap Foreign)
+newtype WhereClause = WhereClause (Object Foreign)
 
 derive instance newtypeWhereClause :: Newtype WhereClause _
 
