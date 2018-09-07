@@ -25,13 +25,17 @@
 
 module Sequelize.Types where
 
-import Foreign (Foreign)
+import Prelude
+
 import Data.Maybe (Maybe(..))
 import Data.Newtype (class Newtype)
 import Data.Options (Options)
-import Foreign.Object (Object)
 import Data.String.Regex (Regex)
 import Data.Tuple (Tuple)
+import Effect (Effect)
+import Effect.Console (log)
+import Foreign (Foreign)
+import Foreign.Object (Object)
 
 foreign import null :: Foreign
 
@@ -51,7 +55,7 @@ foreign import data Conn :: Type
 type SyncOpts =
   { force :: Boolean
   , match :: Maybe Regex
-  , logging :: Boolean
+  , logging :: (String -> Effect Unit)
   , schema :: String
   , searchPath :: String
   , hooks :: Boolean
@@ -62,7 +66,7 @@ defaultSyncOpts :: SyncOpts
 defaultSyncOpts =
   { force: false
   , match: Nothing
-  , logging: true
+  , logging: log
   , schema: ""
   , searchPath: "DEFAULT"
   , hooks: true

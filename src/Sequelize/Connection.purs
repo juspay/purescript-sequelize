@@ -85,8 +85,7 @@ foreign import _syncSequelize
       (Promise Unit)
 
 syncConn
-  :: forall e
-   . Conn
+  :: Conn
   -> SyncOpts
   -> Aff Unit
 syncConn conn opts = toAff $ runFn4 _syncSequelize isJust fromJust conn opts
