@@ -63,7 +63,6 @@ module Sequelize.Where
 
 import Data.Bifunctor (rmap)
 import Foreign (Foreign, unsafeToForeign)
-import Data.Monoid (class Monoid)
 import Foreign.Object as Object
 import Data.Tuple (Tuple)
 import Prelude hiding (($>))

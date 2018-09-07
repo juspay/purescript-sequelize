@@ -55,7 +55,7 @@ throwMultipleErrors errs =
   let errString = foldMap1 show errs
    in throwError $ error errString
 
-promiseToAff2 :: forall a b c d. Fn2 a Foreign (Promise b) -> a -> Options c -> Aff b
+promiseToAff2 :: forall a b c. Fn2 a Foreign (Promise b) -> a -> Options c -> Aff b
 promiseToAff2 fn m o = toAff $ runFn2 fn m $ options o
 
 promiseToAff3

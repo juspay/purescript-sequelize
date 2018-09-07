@@ -36,11 +36,10 @@ exports._syncSequelize = function (isJust, fromJust, sequelize, opts) {
   if (isJust(opts["match"])) {
     newOpts["match"] = fromJust(opts["match"])();
   }
-  if (opts["logging"] === true) {
-    newOpts["logging"] = console.log;
-  } else {
-    newOpts["logging"] = opts["logging"];
+  var loggerFn = function (m) {
+    return opts["logging"](m)();
   }
+  newOpts["logging"] = loggerFn;
   newOpts["force"] = opts["force"];
   newOpts["schema"] = opts["schema"];
   newOpts["searchPath"] = opts["searchPath"];
