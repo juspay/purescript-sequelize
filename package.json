@@ -7,7 +7,7 @@
     "test": "test"
   },
   "dependencies": {
-    "sequelize": "^4.4.2",
+    "sequelize": "^4.38.0",
     "sequelize-cli": "^2.7.0"
   },
   "devDependencies": {
