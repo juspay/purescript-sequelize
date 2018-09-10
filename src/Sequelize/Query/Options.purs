@@ -43,12 +43,16 @@ module Sequelize.Query.Options
   , include7
   , include8
   , include9
+  , logging
   ) where
 
+import Control.Monad.Eff (Eff)
+import Control.Monad.Eff.Uncurried (EffFn1)
 import Data.Function.Uncurried (Fn2, Fn3, Fn4, Fn5, Fn6, Fn7, Fn8, Fn9, runFn2, runFn3, runFn4, runFn5, runFn6, runFn7, runFn8, runFn9)
 import Data.Functor.Contravariant ((>$<))
 import Data.Options (Option, opt)
 import Data.Tuple.Nested (type (/\), (/\))
+import Prelude (Unit)
 import Sequelize.Class (class IsWhere, class Model, encodeModel, toWhere)
 import Sequelize.Types (Alias, ModelOf)
 
@@ -190,6 +194,9 @@ include9 = f >$< opt "include"
   where
     f (ma /\ mb /\ mc /\ md /\ me /\ mf /\ mg /\ mh /\ mi) = runFn9 _array9 ma mb mc md me mf mg mh mi
 
+logging :: forall a eff. Model a => Option a (EffFn1 eff String Unit)
+logging = opt "logging"
+
 foreign import _array2 :: forall a b c. Fn2 a b (Array c)
 foreign import _array3 :: forall a b c d. Fn3 a b c (Array d)
 foreign import _array4 :: forall a b c d e. Fn4 a b c d (Array e)
@@ -198,3 +205,4 @@ foreign import _array6 :: forall a b c d e f g. Fn6 a b c d e f (Array g)
 foreign import _array7 :: forall a b c d e f g h. Fn7 a b c d e f g (Array h)
 foreign import _array8 :: forall a b c d e f g h i. Fn8 a b c d e f g h (Array i)
 foreign import _array9 :: forall a b c d e f g h i j. Fn9 a b c d e f g h i (Array j)
+
