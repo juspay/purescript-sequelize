@@ -205,4 +205,3 @@ foreign import _array6 :: forall a b c d e f g. Fn6 a b c d e f (Array g)
 foreign import _array7 :: forall a b c d e f g h. Fn7 a b c d e f g (Array h)
 foreign import _array8 :: forall a b c d e f g h i. Fn8 a b c d e f g h (Array i)
 foreign import _array9 :: forall a b c d e f g h i j. Fn9 a b c d e f g h i (Array j)
-
