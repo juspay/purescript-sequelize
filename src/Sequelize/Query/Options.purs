@@ -44,10 +44,11 @@ module Sequelize.Query.Options
   , include8
   , include9
   , logging
+  , logging2
   ) where
 
 import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Uncurried (EffFn1)
+import Control.Monad.Eff.Uncurried (EffFn1, EffFn2)
 import Data.Function.Uncurried (Fn2, Fn3, Fn4, Fn5, Fn6, Fn7, Fn8, Fn9, runFn2, runFn3, runFn4, runFn5, runFn6, runFn7, runFn8, runFn9)
 import Data.Functor.Contravariant ((>$<))
 import Data.Options (Option, opt)
@@ -196,6 +197,9 @@ include9 = f >$< opt "include"
 
 logging :: forall a eff. Model a => Option a (EffFn1 eff String Unit)
 logging = opt "logging"
+
+logging2 :: forall a eff. Model a => Option a (EffFn2 eff String String Unit)
+logging2 = opt "logging"
 
 foreign import _array2 :: forall a b c. Fn2 a b (Array c)
 foreign import _array3 :: forall a b c d. Fn3 a b c (Array d)
