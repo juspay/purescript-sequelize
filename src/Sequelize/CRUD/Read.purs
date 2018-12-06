@@ -47,16 +47,17 @@ module Sequelize.CRUD.Read
 
 import Prelude
 
-import Effect.Aff (Aff)
-import Effect.Exception (error)
 import Control.Monad.Error.Class (throwError)
 import Control.Promise (Promise, toAff)
+import Data.Array ((:))
 import Data.Array as Array
-import Data.Either (Either(..), either, hush)
-import Foreign (Foreign, unsafeToForeign, isNull)
+import Data.Either (Either(..), either)
 import Data.Function.Uncurried (Fn2, Fn3, runFn2)
 import Data.Maybe (Maybe(..))
 import Data.Options (Options)
+import Effect.Aff (Aff)
+import Effect.Exception (error)
+import Foreign (Foreign, unsafeToForeign, isNull)
 import Sequelize.Class (class Model, class Submodel)
 import Sequelize.Instance (instanceToModelE)
 import Sequelize.Query.Util (coerceArrayTuple, promiseToAff2, promiseToAff3)
@@ -237,7 +238,10 @@ findAndCountAll'
   -> Aff {count :: Int, rows :: Array b}
 findAndCountAll' m o = do
   all <- findAndCountAll m o
-  pure {count: all.count, rows: catMaybes all.rows}
+  eitherRows <- pure <<< mapToEither $ instanceToModelE <$> all.rows
+  case eitherRows of
+    Right v -> pure {count: all.count, rows: v}
+    Left v -> (throwError <<< error <<< show) v
 
 foreign import _findAll
   :: forall a b c.
@@ -259,7 +263,12 @@ findAll'
   => ModelOf a
   -> Options b
   -> Aff (Array b)
-findAll' m o = catMaybes <$> findAll m o
+findAll' m o = do 
+  rows <- findAll m o
+  eitherRows <- pure <<< mapToEither $ instanceToModelE <$> rows
+  case eitherRows of
+    Right v -> pure v
+    Left v -> (throwError <<< error <<< show) v
 
 foreign import _count
   :: forall a b.
@@ -321,5 +330,9 @@ collapseErrors find a b msg = do
        Just (Right x) -> pure x
        _ -> throwError $ error msg
 
-catMaybes :: forall m. Model m => Array (Instance m) -> Array m
-catMaybes ms = Array.catMaybes (hush <<< instanceToModelE <$> ms)
+mapToEither :: forall err a. Array (Either err a) -> Either err (Array a)
+mapToEither arr = case Array.uncons arr of
+  Just {head : x, tail : xs} -> case x of
+    Left v -> Left v
+    Right v -> mapToEither xs >>= (\a -> Right (v : a))
+  Nothing -> Right []
