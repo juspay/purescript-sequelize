@@ -28,18 +28,21 @@ module Sequelize.CRUD.Update
   , updateModel
   , increment
   , decrement
+  , updateModel'
   ) where
 
 import Prelude
 
-import Effect.Aff (Aff)
 import Control.Promise (Promise, toAff)
 import Data.Array ((!!))
-import Foreign (Foreign, isUndefined)
+import Data.Either (Either(..))
 import Data.Function.Uncurried (Fn2, Fn3, runFn2, runFn3)
 import Data.Maybe (Maybe(Nothing, Just), maybe)
 import Data.Options (Options, options)
+import Effect.Aff (Aff, error, throwError)
+import Foreign (Foreign, isUndefined)
 import Foreign.Object (Object)
+import Sequelize.CRUD.Utils (mapInstanceToModel)
 import Sequelize.Class (class Model, encodeModel)
 import Sequelize.Types (Instance, ModelOf)
 import Unsafe.Coerce (unsafeCoerce)
@@ -83,6 +86,22 @@ updateModel m a o = do
     handleUndefined x = if isUndefined x then Nothing else Just (unsafeCoerce x)
     -- TODO: check if x really has a runtime representation of Array (Instance a)
 
+updateModel'
+  :: forall a. Model a
+  => ModelOf a
+  -> Options a
+  -> Options a
+  -> Aff { affectedCount :: Int, affectedRows :: Maybe (Array a) }
+updateModel' m a o = do
+  updated <- updateModel m a o
+  case updated.affectedRows of
+    Just rows -> do
+      updatedRows <- pure $ mapInstanceToModel rows
+      case updatedRows of
+        Right v -> pure {affectedCount: updated.affectedCount, affectedRows: Just v}
+        Left err -> (throwError <<< error <<< show) err
+    Nothing -> pure {affectedCount: updated.affectedCount, affectedRows: Nothing}
+  
 foreign import _increment
   :: forall a.
      Fn2
