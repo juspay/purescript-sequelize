@@ -25,6 +25,7 @@
 
 module Sequelize.Connection
   ( getConn
+  , getConnOpts
   , syncConn
   , authenticate
   , _newSequelize
