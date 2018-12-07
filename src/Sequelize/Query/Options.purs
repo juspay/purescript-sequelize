@@ -33,6 +33,7 @@ module Sequelize.Query.Options
   , searchPath
   , returning
   , defaults
+  , useMaster
   , include
   , include1
   , include2
@@ -79,6 +80,9 @@ returning = opt "returning"
 
 defaults :: forall a. Model a => Option a a
 defaults = encodeModel >$< opt "defaults"
+
+useMaster :: forall a. Model a => Option a Boolean
+useMaster = opt "useMaster"
 
 -- | Alias for include1
 include :: forall a b. Model b => Option a {model :: ModelOf b, as :: Alias}

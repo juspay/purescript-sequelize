@@ -75,6 +75,8 @@ getConn
   :: Options ConnOpts -> Aff Conn
 getConn = liftEffect <<< _newSequelize <<< options
 
+foreign import getConnOpts :: Conn -> Options ConnOpts
+
 foreign import _syncSequelize
   :: forall a.
       Fn4
