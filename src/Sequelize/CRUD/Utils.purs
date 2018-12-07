@@ -27,11 +27,9 @@ module Sequelize.CRUD.Utils (mapInstanceToModel) where
 
 import Prelude
 
-import Data.Array ((:))
-import Data.Array as Array
-import Data.Either (Either(..))
+import Data.Either (Either)
 import Data.List.Types (NonEmptyList)
-import Data.Maybe (Maybe(..))
+import Data.Traversable (sequence)
 import Foreign (ForeignError)
 import Sequelize.Class (class Model)
 import Sequelize.Instance (instanceToModelE)
@@ -40,11 +38,4 @@ import Sequelize.Types (Instance)
 mapInstanceToModel :: forall a. Model a
   => Array (Instance a) 
   -> Either (NonEmptyList ForeignError) (Array a)
-mapInstanceToModel arr = mapToEither $ instanceToModelE <$> arr
-
-mapToEither :: forall err a. Array (Either err a) -> Either err (Array a)
-mapToEither arr = case Array.uncons arr of
-  Just {head : x, tail : xs} -> case x of
-    Left v -> Left v
-    Right v -> mapToEither xs >>= (\a -> Right (v : a))
-  Nothing -> Right []
+mapInstanceToModel arr = sequence $ instanceToModelE <$> arr
