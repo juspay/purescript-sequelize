@@ -52,4 +52,7 @@ exports._authenticate = function (sequelize) {
   return sequelize.authenticate();
 };
 
+exports.getConnOpts = function(sequelize){
+  return sequelize.options;
+}
 exports.literal = Sequelize.literal;
