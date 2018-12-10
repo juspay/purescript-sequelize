@@ -27,6 +27,14 @@ var Sequelize = require('sequelize');
 
 exports._newSequelize = function (options) {
   return function () {
+    if(options.logging) {
+      var newOpts = JSON.parse(JSON.stringify(options));
+      var loggerFn = function (m) {
+        return options["logging"](m)();
+      }
+      newOpts.logging = loggerFn;
+      return new Sequelize(newOpts);
+    }
     return new Sequelize(options);
   };
 };

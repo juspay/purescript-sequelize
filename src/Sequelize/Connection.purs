@@ -53,6 +53,7 @@ module Sequelize.Connection
   , isolationLevel
   , retry
   , typeValidation
+  , logging
   ) where
 
 import Prelude
