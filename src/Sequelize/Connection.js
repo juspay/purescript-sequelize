@@ -30,6 +30,9 @@ exports._newSequelize = function (options) {
     if(options.logging) {
       var newOpts = JSON.parse(JSON.stringify(options));
       var loggerFn = function (m) {
+        if (options.benchmark) {
+          m = m + ' Elapsed time: ' + arguments[1] + 'ms';
+        }
         return options["logging"](m)();
       }
       newOpts.logging = loggerFn;
