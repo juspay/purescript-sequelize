@@ -30,6 +30,7 @@ module Sequelize.Query.Options
   , limit
   , offset
   , order
+  , transaction
   , searchPath
   , returning
   , defaults
@@ -51,7 +52,7 @@ import Data.Functor.Contravariant ((>$<))
 import Data.Options (Option, opt)
 import Data.Tuple.Nested (type (/\), (/\))
 import Sequelize.Class (class IsWhere, class Model, encodeModel, toWhere)
-import Sequelize.Types (Alias, ModelOf)
+import Sequelize.Types (Alias, ModelOf, Transaction)
 
 where_ :: forall wh a. Model a => IsWhere wh => Option a (wh a)
 where_ = toWhere >$< opt "where"
@@ -77,6 +78,9 @@ searchPath = opt "searchPath"
 -- | Only for postgres
 returning :: forall a. Model a => Option a Boolean
 returning = opt "returning"
+
+transaction :: forall a. Model a => Option a Transaction
+transaction = opt "transaction"
 
 defaults :: forall a. Model a => Option a a
 defaults = encodeModel >$< opt "defaults"
