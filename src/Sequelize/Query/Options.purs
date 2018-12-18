@@ -34,6 +34,7 @@ module Sequelize.Query.Options
   , returning
   , defaults
   , useMaster
+  , transaction
   , include
   , include1
   , include2
