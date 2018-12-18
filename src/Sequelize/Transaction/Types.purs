@@ -23,31 +23,9 @@
  along with this program. If not, see <https://www.gnu.org/licenses/agpl.html>.
 -}
 
-module Sequelize.Transaction where
+module Sequelize.Transaction.Types where
 
-import Prelude
+-- | Transaction Instance Created by sequelize.transaction()
+foreign import data Transaction :: Type
 
-import Control.Promise (Promise, toAff)
-import Data.Options (Options, options)
-import Effect (Effect)
-import Effect.Aff (Aff)
-import Effect.Class (liftEffect)
-import Foreign (Foreign, unsafeToForeign)
-import Sequelize.Transaction.Types (Transaction, TransactionOpts)
-import Sequelize.Types (Conn)
-
-foreign import _transaction :: Conn -> Foreign -> Promise Transaction
-foreign import _commitTransaction :: Transaction -> Effect Unit
-foreign import _rollbackTransaction :: Transaction -> Effect Unit
-
-startTransaction :: Conn -> Aff Transaction
-startTransaction conn = toAff <<< _transaction conn $ unsafeToForeign {}
-
-startTransactionWithOpts :: Conn -> Options TransactionOpts -> Aff Transaction
-startTransactionWithOpts conn opts = toAff <<< _transaction conn $ options opts
-
-commitTransaction :: Transaction -> Aff Unit
-commitTransaction = liftEffect <<< _commitTransaction
-
-rollbackTransaction :: Transaction -> Aff Unit
-rollbackTransaction = liftEffect <<< _rollbackTransaction
+foreign import data TransactionOpts :: Type

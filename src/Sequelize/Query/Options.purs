@@ -51,6 +51,7 @@ import Data.Functor.Contravariant ((>$<))
 import Data.Options (Option, opt)
 import Data.Tuple.Nested (type (/\), (/\))
 import Sequelize.Class (class IsWhere, class Model, encodeModel, toWhere)
+import Sequelize.Transaction.Types (Transaction)
 import Sequelize.Types (Alias, ModelOf)
 
 where_ :: forall wh a. Model a => IsWhere wh => Option a (wh a)
@@ -83,6 +84,9 @@ defaults = encodeModel >$< opt "defaults"
 
 useMaster :: forall a. Model a => Option a Boolean
 useMaster = opt "useMaster"
+
+transaction :: forall a. Model a => Option a Transaction
+transaction = opt "transaction"
 
 -- | Alias for include1
 include :: forall a b. Model b => Option a {model :: ModelOf b, as :: Alias}

@@ -26,7 +26,9 @@
 "use strict;"
 
 exports._transaction = function(sequelize){
-    return sequelize.transaction();
+    return function (opts) {
+      return sequelize.transaction(opts);
+    }
 }
 
 exports._commitTransaction = function(transaction){
