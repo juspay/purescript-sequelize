@@ -93,18 +93,18 @@ create'
 create' m t = toAff $ runFn3 _create m (encodeModel t) {}
 
 foreign import _bulkCreate
-  :: forall a b c.
+  :: forall a b c d.
      Fn3
      (ModelOf a)
      (Array b)
      c
-     (Promise Unit)
+    (Promise (Array (Instance d)))
 
 bulkCreate
   :: forall a b. Submodel a b
   => ModelOf a
   -> Array b
-  -> Aff Unit
+  -> Aff (Array (Instance b))
 bulkCreate m arr = toAff $ runFn3 _bulkCreate m (map encodeModel arr) {}
 
 createWithOpts
@@ -126,9 +126,9 @@ createWithOpts'
 createWithOpts' m t opts = toAff $ runFn3 _create m (encodeModel t) (options opts)
 
 bulkCreateWithOpts
-  :: forall a b c. Submodel a b
+  :: forall a b. Submodel a b
   => ModelOf a
   -> Array b
-  -> Options c
-  -> Aff Unit
+  -> Options b
+  -> Aff (Array (Instance b))
 bulkCreateWithOpts m arr opts = toAff $ runFn3 _bulkCreate m (map encodeModel arr) (options opts)
