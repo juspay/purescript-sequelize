@@ -48,6 +48,8 @@ module Sequelize.CRUD.Read
 import Prelude
 
 import Control.Monad.Aff (Aff)
+import Control.Monad.Eff (Eff)
+import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Exception (error)
 import Control.Monad.Error.Class (throwError)
 import Control.Promise (Promise, toAff)
