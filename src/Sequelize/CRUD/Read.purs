@@ -40,6 +40,7 @@ module Sequelize.CRUD.Read
   , findAll
   , findOne'
   , findAll'
+  , query'
   , count
   , max
   , min
