@@ -23,7 +23,14 @@
 * along with this program. If not, see <https://www.gnu.org/licenses/agpl.html>.
 */
 
-var Sequelize = require('sequelize');
+const Sequelize = require('sequelize');
+const Promise = require('bluebird');
+const clsBluebird = require('cls-bluebird');
+const cls = require('cls-hooked');
+
+var ns = cls.getNamespace('logger') || cls.createNamespace('logger');
+clsBluebird(ns, Promise);
+Sequelize.useCLS(ns);
 
 exports._newSequelize = function (options) {
   return function () {
