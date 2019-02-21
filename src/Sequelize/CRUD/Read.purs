@@ -40,6 +40,7 @@ module Sequelize.CRUD.Read
   , findAll
   , findOne'
   , findAll'
+  , query'
   , count
   , max
   , min
@@ -48,6 +49,8 @@ module Sequelize.CRUD.Read
 import Prelude
 
 import Control.Monad.Aff (Aff)
+import Control.Monad.Eff (Eff)
+import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Exception (error)
 import Control.Monad.Error.Class (throwError)
 import Control.Promise (Promise, toAff)
@@ -60,7 +63,7 @@ import Data.Options (Options)
 import Sequelize.Class (class Model, class Submodel)
 import Sequelize.Instance (instanceToModelE)
 import Sequelize.Query.Util (coerceArrayTuple, promiseToAff2, promiseToAff3)
-import Sequelize.Types (Instance, ModelOf, SEQUELIZE)
+import Sequelize.Types (Conn, Instance, ModelOf, SEQUELIZE)
 
 foreign import _findById
   :: forall a b c.
@@ -260,6 +263,13 @@ findAll'
   -> Options b
   -> Aff ( sequelize :: SEQUELIZE | e ) (Array b)
 findAll' m o = catMaybes <$> findAll m o
+
+foreign import _query :: forall a b e. Conn -> String -> (Eff (sequelize :: SEQUELIZE | e) (Promise b))
+
+query' :: forall a b e. Conn -> String -> (Aff (sequelize :: SEQUELIZE | e) (Array a))
+query' c q = do
+  res <- liftEff $ _query c q
+  toAff res
 
 foreign import _count
   :: forall a b.

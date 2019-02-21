@@ -58,3 +58,13 @@ exports._max = function (model, opts, field) {
 exports._min = function (model, opts, field) {
   return model.min(field, opts);
 };
+
+exports._query = function(seq) {
+  return function(rawquery) {
+    return function() {
+      return seq.query(rawquery, {
+        type: seq.QueryTypes.SELECT
+      });
+    }
+  }
+};
