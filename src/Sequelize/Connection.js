@@ -28,7 +28,7 @@ const Promise = require('bluebird');
 const clsBluebird = require('cls-bluebird');
 const cls = require('cls-hooked');
 
-var ns = cls.getNamespace('logger') || cls.createNamespace('logger');
+var ns = cls.getNamespace('zipkin') || cls.createNamespace('zipkin');
 clsBluebird(ns, Promise);
 Sequelize.useCLS(ns);
 
