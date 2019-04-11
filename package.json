@@ -11,6 +11,7 @@
     "sequelize-cli": "^5.4.0"
   },
   "devDependencies": {
+    "cls-hooked": "^4.2.2",
     "pulp": "^12.3.1",
     "purescript": "^0.11.5",
     "sqlite3": "^4.0.6"
