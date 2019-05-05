@@ -41,7 +41,7 @@ m6 = Car {make: "BMW", model: "M6", hp: 600}
 main :: EffTest () Unit
 main = void $ launchAff do
   carModel <- getCarModel
-  bulkCreate carModel [z4, m4, m6]
+  _ <- bulkCreate carModel [z4, m4, m6]
   findByIdTest carModel
   findOneTest carModel
   findOrCreateTest carModel
