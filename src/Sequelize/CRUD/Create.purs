@@ -104,7 +104,7 @@ bulkCreate
   :: forall a b e. Submodel a b
   => ModelOf a
   -> Array b
-  -> Aff ( sequelize :: SEQUELIZE | e ) (Array (Instance b)) 
+  -> Aff ( sequelize :: SEQUELIZE | e ) (Array (Instance b))
 bulkCreate m arr = toAff $ runFn3 _bulkCreate m (map encodeModel arr) {}
 
 createWithOpts
