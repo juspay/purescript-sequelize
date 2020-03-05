@@ -51,6 +51,6 @@ import Sequelize.Where (Literal(Int, Null, String), Term(Any, Between, Col, Cont
 import Test.Common (Company(..), User(..), SuperUser(..), Car(..), myConn, getUserAndCompany, getCarModel) as Exports
 
 type TestAff e = (console :: Exports.CONSOLE, sequelize :: Exports.SEQUELIZE | e)
-type TestEff e = TestAff (exception :: Exports. EXCEPTION | e)
+type TestEff e = TestAff e
 type AffTest e a = Exports.Aff (TestAff e) a
 type EffTest e a = Exports.Eff (TestEff e) a
