@@ -27,6 +27,7 @@ module Sequelize.Query.Options
   ( where_
   , attributes
   , paranoid
+  , group
   , limit
   , offset
   , order
@@ -63,6 +64,9 @@ attributes = opt "attributes"
 
 paranoid :: forall a. Model a => Option a Boolean
 paranoid = opt "paranoid"
+
+group :: forall a. Model a => Option a (Array String)
+group = opt "group"
 
 limit :: forall a. Model a => Option a Int
 limit = opt "limit"
