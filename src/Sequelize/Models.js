@@ -78,3 +78,10 @@ exports._belongsToMany = function (target, source, thru) {
     return null;
   };
 };
+
+exports._belongsToWithFkKey = function (target, source, alias, fkKey, targetKey) {
+  return function() {
+    target.belongsTo(source, {as : alias, foreignKey: fkKey, targetKey: targetKey});
+    return null;
+  };
+};

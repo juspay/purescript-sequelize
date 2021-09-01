@@ -31,6 +31,7 @@ module Sequelize.Models
   , hasMany
   , belongsTo
   , belongsToMany
+  , belongsToWithFkKey
   ) where
 
 import Prelude
@@ -41,7 +42,7 @@ import Control.Monad.Eff.Class (liftEff)
 import Control.Promise (Promise, toAff)
 import Data.Bifunctor (rmap)
 import Data.Foreign (Foreign)
-import Data.Function.Uncurried (Fn3, Fn4, runFn3, runFn4)
+import Data.Function.Uncurried (Fn3, Fn4, Fn5, runFn3, runFn4, runFn5)
 import Data.Maybe (Maybe, fromJust, isJust)
 import Data.Options (Options, options)
 import Data.StrMap (StrMap, fromFoldable)
@@ -169,3 +170,24 @@ belongsToMany
   -> Alias
   -> Aff ( sequelize :: SEQUELIZE | e ) Unit
 belongsToMany t s a = liftEff $ runFn3 _belongsToMany t s a
+
+foreign import _belongsToWithFkKey
+  :: forall a b alias e.
+     Fn5
+     (ModelOf a)
+     (ModelOf b)
+     alias
+     String
+     String
+     (Eff e Unit)
+
+belongsToWithFkKey
+  :: forall source target e. Model source
+  => Model target
+  => ModelOf target
+  -> ModelOf source
+  -> Alias
+  -> String
+  -> String
+  -> Aff ( sequelize :: SEQUELIZE | e ) Unit
+belongsToWithFkKey t s a fKey target = liftEff $ runFn5 _belongsToWithFkKey t s a fKey target
