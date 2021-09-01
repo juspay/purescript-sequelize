@@ -31,7 +31,7 @@ module Sequelize.Models
   , hasMany
   , belongsTo
   , belongsToMany
-  , belongsToWithFkKey
+  , belongsToWithFKey
   ) where
 
 import Prelude
@@ -171,7 +171,7 @@ belongsToMany
   -> Aff ( sequelize :: SEQUELIZE | e ) Unit
 belongsToMany t s a = liftEff $ runFn3 _belongsToMany t s a
 
-foreign import _belongsToWithFkKey
+foreign import _belongsToWithFKey
   :: forall a b alias e.
      Fn5
      (ModelOf a)
@@ -181,7 +181,7 @@ foreign import _belongsToWithFkKey
      String
      (Eff e Unit)
 
-belongsToWithFkKey
+belongsToWithFKey
   :: forall source target e. Model source
   => Model target
   => ModelOf target
@@ -190,4 +190,4 @@ belongsToWithFkKey
   -> String
   -> String
   -> Aff ( sequelize :: SEQUELIZE | e ) Unit
-belongsToWithFkKey t s a fKey target = liftEff $ runFn5 _belongsToWithFkKey t s a fKey target
+belongsToWithFKey t s a fKey tKey = liftEff $ runFn5 _belongsToWithFKey t s a fKey tKey
