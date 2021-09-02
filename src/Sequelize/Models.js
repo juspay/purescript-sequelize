@@ -78,3 +78,10 @@ exports._belongsToMany = function (target, source, thru) {
     return null;
   };
 };
+
+exports._belongsToWithOptions = function (target, source, op) {
+  return function() {
+    target.belongsTo(source, op);
+    return null;
+  };
+};

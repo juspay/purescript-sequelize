@@ -31,6 +31,7 @@ module Sequelize.Models
   , hasMany
   , belongsTo
   , belongsToMany
+  , belongsToWithOptions
   ) where
 
 import Prelude
@@ -169,3 +170,20 @@ belongsToMany
   -> Alias
   -> Aff ( sequelize :: SEQUELIZE | e ) Unit
 belongsToMany t s a = liftEff $ runFn3 _belongsToMany t s a
+
+foreign import _belongsToWithOptions
+  :: forall a b e.
+     Fn3
+     (ModelOf a)
+     (ModelOf b)
+     Foreign
+     (Eff e Unit)
+
+belongsToWithOptions
+  :: forall source target e. Model source
+  => Model target
+  => ModelOf target
+  -> ModelOf source
+  -> Foreign
+  -> Aff ( sequelize :: SEQUELIZE | e ) Unit
+belongsToWithOptions t s op = liftEff $ runFn3 _belongsToWithOptions t s op
