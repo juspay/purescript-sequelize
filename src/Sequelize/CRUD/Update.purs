@@ -38,9 +38,10 @@ import Data.Array ((!!))
 import Data.Foreign (Foreign, isUndefined)
 import Data.Function.Uncurried (Fn2, Fn3, runFn2, runFn3)
 import Data.Maybe (Maybe(Nothing, Just), maybe)
-import Data.Options (Options, options)
+import Data.Options (Options, opt, options, (:=))
 import Data.StrMap (StrMap)
-import Sequelize.Class (class Model, encodeModel)
+import Sequelize.CRUD.Create (bulkCreateWithOpts)
+import Sequelize.Class (class Model, class Submodel, encodeModel)
 import Sequelize.Types (Instance, ModelOf, SEQUELIZE)
 import Unsafe.Coerce (unsafeCoerce)
 
@@ -84,6 +85,23 @@ updateModel m a o = do
     updateM = runFn3 _updateModel
     handleUndefined x = if isUndefined x then Nothing else Just (unsafeCoerce x)
     -- TODO: check if x really has a runtime representation of Array (Instance a)
+
+bulkUpdate
+  :: forall a e. Model a
+  => Submodel a Foreign
+  => ModelOf a
+  -> Array (Options a)
+  -> Options a
+  -> Aff
+    ( sequelize :: SEQUELIZE | e )
+    (Array (Instance Foreign))
+bulkUpdate m a o = do
+    let b = map options a
+    bulkCreateWithOpts m b o
+
+    where
+        updateDuplicates :: Options a
+        updateDuplicates = opt "updateDuplicates" := true
 
 foreign import _increment
   :: forall a.

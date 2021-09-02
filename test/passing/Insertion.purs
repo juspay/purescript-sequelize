@@ -56,7 +56,7 @@ main = void $ launchAff do
   incrementTest hondaInstance
   decrementTest hondaInstance
 
-  bulkCreateTest carModel
+  bulkCar <- bulkCreateTest carModel
 
   updateModelTest carModel
 
@@ -88,7 +88,7 @@ incrementTest inst = increment inst $ Map.fromFoldable [Tuple "hp" 15]
 decrementTest :: Instance Car -> AffTest () Unit
 decrementTest inst = decrement inst $ Map.fromFoldable [Tuple "hp" 10]
 
-bulkCreateTest :: ModelOf Car -> AffTest () Unit
+bulkCreateTest :: ModelOf Car -> AffTest () (Array (Instance Car)) 
 bulkCreateTest carModel = bulkCreate carModel [audi, honda]
 
 updateModelTest :: ModelOf Car -> AffTest () Unit
