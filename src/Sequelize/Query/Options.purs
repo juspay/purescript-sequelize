@@ -30,6 +30,8 @@ module Sequelize.Query.Options
   , limit
   , offset
   , order
+  , transaction
+  , lock
   , searchPath
   , returning
   , defaults
@@ -55,7 +57,7 @@ import Data.Options (Option, opt)
 import Data.Tuple.Nested (type (/\), (/\))
 import Prelude (Unit)
 import Sequelize.Class (class IsWhere, class Model, encodeModel, toWhere)
-import Sequelize.Types (Alias, ModelOf)
+import Sequelize.Types (Alias, ModelOf, Transaction)
 
 where_ :: forall wh a. Model a => IsWhere wh => Option a (wh a)
 where_ = toWhere >$< opt "where"
@@ -74,6 +76,12 @@ offset = opt "offset"
 
 order :: forall a. Model a => Option a (Array (Array String))
 order = opt "order"
+
+transaction :: forall a. Model a => Option a Transaction
+transaction = opt "transaction"
+
+lock :: forall a. Model a => Option a Boolean
+lock = opt "lock"
 
 searchPath :: forall a. Model a => Option a String
 searchPath = opt "searchPath"
