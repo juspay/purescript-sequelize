@@ -28,6 +28,7 @@ module Test.Query where
 import Test.Prelude
 
 import Control.Monad.Aff (attempt)
+import Data.StrMap as StrMap
 
 z4 :: Car
 z4 = Car {make: "BMW", model: "Z4", hp: 335}
@@ -40,6 +41,7 @@ m6 = Car {make: "BMW", model: "M6", hp: 600}
 
 main :: EffTest () Unit
 main = void $ launchAff do
+  conn <- myConn
   carModel <- getCarModel
   _ <- bulkCreate carModel [z4, m4, m6]
   findByIdTest carModel
@@ -51,6 +53,8 @@ main = void $ launchAff do
   maxTest carModel
   maxMissingTest carModel
   minTest carModel
+  rawQuery conn
+  rawsQueryWithRep conn
 
 findByIdTest :: ModelOf Car -> AffTest () Unit
 findByIdTest carModel = do
@@ -107,3 +111,14 @@ maxMissingTest carModel = do
   n <- attempt $ max carModel mempty "propertyDoesNotExist"
   log "It succeeds if it prints a Left value to console"
   logShow n
+
+rawQuery :: Conn -> AffTest () Unit
+rawQuery conn = do
+  void $ query' conn "SELECT * FROM cars LIMIT 1;"
+
+rawsQueryWithRep :: Conn -> AffTest () Unit
+rawsQueryWithRep conn = do
+  void $ query'' conn "SELECT * FROM cars where make = :make" replacements
+  where
+    replacements =
+      StrMap.singleton "make" (toForeign "BMW")

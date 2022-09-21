@@ -68,3 +68,16 @@ exports._query = function(seq) {
     }
   }
 };
+
+exports["_query'"] = function(seq) {
+  return function(rawquery) {
+    return function(rep) {
+      return function(){
+        return seq.query(rawquery, {
+          replacements: rep,
+          type: seq.QueryTypes.SELECT
+        });
+    }
+  }
+  }
+};

@@ -41,6 +41,7 @@ module Sequelize.CRUD.Read
   , findOne'
   , findAll'
   , query'
+  , query''
   , count
   , max
   , min
@@ -60,6 +61,7 @@ import Data.Foreign (Foreign, toForeign, isNull)
 import Data.Function.Uncurried (Fn2, Fn3, runFn2)
 import Data.Maybe (Maybe(..))
 import Data.Options (Options)
+import Data.StrMap as StrMap
 import Sequelize.Class (class Model, class Submodel)
 import Sequelize.Instance (instanceToModelE)
 import Sequelize.Query.Util (coerceArrayTuple, promiseToAff2, promiseToAff3)
@@ -269,6 +271,13 @@ foreign import _query :: forall a b e. Conn -> String -> (Eff (sequelize :: SEQU
 query' :: forall a b e. Conn -> String -> (Aff (sequelize :: SEQUELIZE | e) (Array a))
 query' c q = do
   res <- liftEff $ _query c q
+  toAff res
+
+foreign import _query' :: forall a b e. Conn -> String -> StrMap.StrMap Foreign -> (Eff (sequelize :: SEQUELIZE | e) (Promise b))
+
+query'' :: forall a b e. Conn -> String -> StrMap.StrMap Foreign -> (Aff (sequelize :: SEQUELIZE | e) (Array a))
+query'' c q rep = do
+  res <- liftEff $ _query' c q rep
   toAff res
 
 foreign import _count
