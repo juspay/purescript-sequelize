@@ -34,17 +34,17 @@ import Control.Monad.Except (runExcept) as Exports
 import Data.Array (catMaybes) as Exports
 import Data.Either (Either(..), either) as Exports
 import Data.Foreign (F, Foreign, ForeignError(..), readInt, fail, toForeign) as Exports
-import Data.Tuple.Nested ((/\)) as Exports
-import Data.Options ((:=)) as Exports
 import Data.Maybe (Maybe(..), maybe) as Exports
 import Data.Monoid (class Monoid, mempty, power) as Exports
+import Data.Options ((:=)) as Exports
 import Data.Traversable (class Foldable, class Traversable, Accum, all, and, any, elem, find, fold, foldMap, foldMapDefaultL, foldMapDefaultR, foldl, foldlDefault, foldr, foldrDefault, for, for_, intercalate, mapAccumL, mapAccumR, maximum, maximumBy, minimum, minimumBy, notElem, oneOf, or, product, scanl, scanr, sequence, sequenceDefault, sequence_, sum, traverse, traverseDefault, traverse_) as Exports
+import Data.Tuple.Nested ((/\)) as Exports
 import Prelude (class Applicative, class Apply, class Bind, class BooleanAlgebra, class Bounded, class Category, class CommutativeRing, class Discard, class DivisionRing, class Eq, class EuclideanRing, class Field, class Functor, class HeytingAlgebra, class Monad, class Ord, class Ring, class Semigroup, class Semigroupoid, class Semiring, class Show, type (~>), Ordering(EQ, GT, LT), Unit, Void, absurd, add, ap, append, apply, between, bind, bottom, clamp, compare, comparing, compose, conj, const, degree, discard, disj, div, eq, flap, flip, gcd, id, ifM, join, lcm, liftA1, liftM1, map, mod, mul, negate, not, notEq, one, otherwise, pure, recip, show, sub, top, unit, unless, unlessM, void, when, whenM, zero, (#), ($), (&&), (*), (*>), (+), (-), (/), (/=), (<), (<#>), (<$), (<$>), (<*), (<*>), (<<<), (<=), (<=<), (<>), (<@>), (=<<), (==), (>), (>=), (>=>), (>>=), (>>>), (||)) as Exports
-import Sequelize.Instance (instanceToModel, instanceToModelE, peek, (==!)) as Exports
 import Sequelize.CRUD.Create (build, bulkCreate, create, save) as Exports
-import Sequelize.CRUD.Read (count, findAll, findAndCountAll, findById, findByIntId, findByStringId, findOne, findOrBuild, findOrCreate, max, min) as Exports
-import Sequelize.CRUD.Update (decrement, increment, update, updateModel) as Exports
 import Sequelize.CRUD.Destroy (destroy, delete) as Exports
+import Sequelize.CRUD.Read (count, findAll, findAndCountAll, findById, findByIntId, findByStringId, findOne, findOrBuild, findOrCreate, max, min, query', query'') as Exports
+import Sequelize.CRUD.Update (decrement, increment, update, updateModel) as Exports
+import Sequelize.Instance (instanceToModel, instanceToModelE, peek, (==!)) as Exports
 import Sequelize.Query.Options (attributes, include, include1, include2, include3, include4, include5, include6, include7, include8, include9, limit, offset, paranoid, searchPath, where_) as Exports
 import Sequelize.Types (Alias(Alias), ColumnOpts, Conn, ConnOpts, Instance, ModelCols, ModelOf, ModelOpts, SEQUELIZE, WhereClause(WhereClause)) as Exports
 import Sequelize.Where (Literal(Int, Null, String), Term(Any, Between, Col, Contained, Contains, Eq, GreaterThan, GreaterThanOrEq, ILike, IRegExp, In, LessThan, LessThanOrEq, Like, Not, NotBetween, NotEq, NotILike, NotIRegExp, NotIn, NotLike, NotRegExp, Overlap, RegExp), WHERE(WHERE), Where(Is), binaryAnd, binaryOr, eqS, greaterThanOrEqS, greaterThanS, inS, lessThanOrEqS, lessThanS, notEqS, notS, (&&?), (/=?), (<?), (<-?), (<=?), (=?), (==?), (>?), (>=?), (||?), (~?)) as Exports
