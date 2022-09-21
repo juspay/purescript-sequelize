@@ -273,11 +273,11 @@ query' c q = do
   res <- liftEff $ _query c q
   toAff res
 
-foreign import _query' :: forall a b e. Conn -> String -> StrMap.StrMap Foreign -> (Eff (sequelize :: SEQUELIZE | e) (Promise b))
+foreign import _query' :: forall a b e. Conn -> String -> StrMap.StrMap Foreign -> StrMap.StrMap Foreign -> (Eff (sequelize :: SEQUELIZE | e) (Promise b))
 
-query'' :: forall a b e. Conn -> String -> StrMap.StrMap Foreign -> (Aff (sequelize :: SEQUELIZE | e) (Array a))
-query'' c q rep = do
-  res <- liftEff $ _query' c q rep
+query'' :: forall a b e. Conn -> String -> StrMap.StrMap Foreign -> StrMap.StrMap Foreign -> (Aff (sequelize :: SEQUELIZE | e) (Array a))
+query'' c q rep opts = do
+  res <- liftEff $ _query' c q rep opts
   toAff res
 
 foreign import _count

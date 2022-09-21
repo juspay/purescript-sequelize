@@ -118,7 +118,7 @@ rawQuery conn = do
 
 rawsQueryWithRep :: Conn -> AffTest () Unit
 rawsQueryWithRep conn = do
-  void $ query'' conn "SELECT * FROM cars where make = :make" replacements
+  void $ query'' conn "SELECT * FROM cars where make = :make" replacements StrMap.empty
   where
     replacements =
       StrMap.singleton "make" (toForeign "BMW")
