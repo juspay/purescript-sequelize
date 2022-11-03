@@ -62,7 +62,7 @@ import Sequelize.Types (Alias, ModelOf, Transaction)
 where_ :: forall wh a. Model a => IsWhere wh => Option a (wh a)
 where_ = toWhere >$< opt "where"
 
-attributes :: forall a. Model a => Option a { include :: Array String, exclude :: Array String }
+attributes :: forall a. Model a => Option a (Array (Array String))
 attributes = opt "attributes"
 
 paranoid :: forall a. Model a => Option a Boolean
